@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">APK 管理</string>
+	<string name="apk_rename">APK 重命名</string>
+	<string name="apk_move">APK 移动</string>
+	<string name="path">路径：空</string>
+	<string name="status">状态</string>
+</resources>

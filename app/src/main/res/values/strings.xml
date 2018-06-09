@@ -1,3 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">APKManagement</string>
+	<string name="apk_rename">APK Rename</string>
+	<string name="apk_move">APK Move</string>
+	<string name="path">Path</string>
+	<string name="status">Status</string>
 </resources>
