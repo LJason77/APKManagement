@@ -59,6 +59,41 @@ class MainActivity : AppCompatActivity()
 				}
 			}
 		}
+		apk_move.setOnClickListener {
+			when (mSearchApk!!.status!!)
+			{
+				AsyncTask.Status.FINISHED ->
+				{
+					complete.text = getString(R.string.moving_apk)
+					progress.visibility = View.VISIBLE
+					for (apk in apks)
+					{
+						moveApk(apk)
+					}
+					complete.text = "移动完成"
+					progress.visibility = View.GONE
+				}
+				AsyncTask.Status.RUNNING ->
+				{
+					Toast.makeText(this, "扫描未完成", Toast.LENGTH_SHORT).show()
+				}
+				AsyncTask.Status.PENDING ->
+				{
+					Toast.makeText(this, "未扫描", Toast.LENGTH_SHORT).show()
+				}
+			}
+		}
+	}
+	
+	// 移动 APK
+	private fun moveApk(apk: File)
+	{
+		val index = apk.path.lastIndexOf("/")
+		val apkPath = apk.path.substring(0, index)
+		if (removePath != apkPath)
+		{
+			apk.renameTo(File(removePath + "/" + apk.name))
+		}
 	}
 	
 	// 检查存储读写权限
