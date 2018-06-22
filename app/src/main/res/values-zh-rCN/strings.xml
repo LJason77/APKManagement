@@ -5,4 +5,6 @@
 	<string name="apk_move">APK 移动</string>
 	<string name="path">路径：空</string>
 	<string name="status">状态</string>
+	
+	<string name="permission_storage_rationale">需要存储权限才能整理 APK</string>
 </resources>

@@ -5,4 +5,6 @@
 	<string name="apk_move">APK Move</string>
 	<string name="path">Path</string>
 	<string name="status">Status</string>
+	
+	<string name="permission_storage_rationale">You need to store permissions to organize the APK.</string>
 </resources>
