@@ -7,4 +7,9 @@
 	<string name="status">Status</string>
 	
 	<string name="permission_storage_rationale">You need to store permissions to organize the APK.</string>
+	
+	<!-- Toast -->
+	<string name="moving_apk">Moving APK</string>
+	<string name="scan_not_completed">Scan not completed</string>
+	<string name="not_scanned">Not scanned</string>
 </resources>

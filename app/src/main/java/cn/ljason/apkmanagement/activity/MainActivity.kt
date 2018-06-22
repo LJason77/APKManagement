@@ -2,6 +2,7 @@ package cn.ljason.apkmanagement.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.AsyncTask
@@ -10,6 +11,7 @@ import android.os.Environment
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.Toast
 import cn.ljason.apkmanagement.R
 import cn.ljason.apkmanagement.extensions.isPermissionGranted
 import cn.ljason.apkmanagement.extensions.requestPermission
@@ -23,6 +25,7 @@ class MainActivity : AppCompatActivity()
 {
 	private lateinit var removePath: String
 	private var mSearchApk: SearchApk? = null
+	private var mRenameApk: RenameApk? = null
 	private lateinit var files: Array<File>
 	private val apks: MutableList<File> = mutableListOf()
 	
@@ -37,6 +40,25 @@ class MainActivity : AppCompatActivity()
 		// 检查存储读写权限
 		checkingAuthority()
 		mMediaPlayer = MediaPlayer.create(this, R.raw.whisper)
+		
+		apk_rename.setOnClickListener {
+			when (mSearchApk!!.status!!)
+			{
+				AsyncTask.Status.FINISHED ->
+				{
+					mRenameApk = RenameApk(apks)
+					mRenameApk!!.execute(null)
+				}
+				AsyncTask.Status.RUNNING ->
+				{
+					Toast.makeText(this, getString(R.string.scan_not_completed), Toast.LENGTH_SHORT).show()
+				}
+				AsyncTask.Status.PENDING ->
+				{
+					Toast.makeText(this, getString(R.string.not_scanned), Toast.LENGTH_SHORT).show()
+				}
+			}
+		}
 	}
 	
 	// 检查存储读写权限
@@ -171,6 +193,83 @@ class MainActivity : AppCompatActivity()
 				}
 			}
 			return apks
+		}
+	}
+	
+	@SuppressLint("StaticFieldLeak")
+	inner class RenameApk(private val files: MutableList<File>)
+		: AsyncTask<Void, Void, Void>()
+	{
+		override fun onPreExecute()
+		{
+			progress.visibility = View.VISIBLE
+			complete.text = "正在重命名"
+			println("正在重命名")
+		}
+		
+		override fun doInBackground(vararg params: Void?): Void?
+		{
+			reApkName(files)
+			return null
+		}
+		
+		override fun onPostExecute(result: Void?)
+		{
+			progress.visibility = View.GONE
+			complete.text = "重命名结束"
+			// 播放提示音
+			mMediaPlayer.start()
+		}
+		
+		// 重命名 APK
+		private fun reApkName(apks: MutableList<File>)
+		{
+			var apkPath: String
+			var appInfo: ApplicationInfo
+			var appName: String
+			var label: String
+			var version: String
+			var packageName: String
+			var code: Int
+			var newPath: String
+			for (i in 0 until apks.size)
+			{
+				val apk = apks[i]
+				apkPath = apk.path
+				val apkInfo = packageManager.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES)
+				if (apkInfo != null)
+				{
+					appInfo = apkInfo.applicationInfo
+					appInfo.sourceDir = apkPath
+					appInfo.publicSourceDir = apkPath
+					appName = packageManager.getApplicationLabel(appInfo).toString()
+					label = packageManager.getApplicationLabel(appInfo).toString()
+					version = apkInfo.versionName
+					packageName = appInfo.packageName
+					code = apkInfo.versionCode
+					newPath = newPath(apkPath, appName, version, code)
+					if (appName == label && !apkPath.endsWith(newPath))
+					{
+						val newApk = File(newPath)
+						apk.renameTo(newApk)
+						apks[i] = newApk
+						println("apk名称：$appName")
+						println("APK包名：$packageName")
+						println("APK版本号：$code")
+						println("APK版本：$version")
+						println(apkPath)
+						println(newPath)
+						println("--------------------")
+						println("   ")
+					}
+				}
+			}
+		}
+		
+		private fun newPath(oldPath: String, appName: String, version: String, code: Int): String
+		{
+			val index = oldPath.lastIndexOf("/")
+			return oldPath.substring(0, index + 1) + appName + "_v" + version + "-" + code + ".apk"
 		}
 	}
 }
