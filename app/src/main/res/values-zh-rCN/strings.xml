@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">APK 管理</string>
+	<string name="apk_rename">APK 重命名</string>
+	<string name="apk_move">APK 移动</string>
+	<string name="path">路径：空</string>
+	<string name="status">状态</string>
+	
+	<string name="permission_storage_rationale">需要存储权限才能整理 APK</string>
+	
+	<!-- 提示 -->
+	<string name="moving_apk">正在移动 APK</string>
+	<string name="scan_not_completed">扫描未完成</string>
+	<string name="not_scanned">未扫描</string>
+</resources>
